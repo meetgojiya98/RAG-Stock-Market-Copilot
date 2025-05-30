@@ -2,8 +2,12 @@ import os
 import numpy as np
 import faiss
 import openai
+from dotenv import load_dotenv
 
-openai.api_key = "***REMOVED***"  # your OpenAI key
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+load_dotenv(os.path.join(BASE_DIR, ".env.local"))
+
+openai.api_key = os.environ.get("OPENAI_API_KEY", "")
 
 DATA_DIR = "docs"
 INDEX_FILE = "faiss.index"
