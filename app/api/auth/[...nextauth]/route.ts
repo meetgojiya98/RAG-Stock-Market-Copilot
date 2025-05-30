@@ -6,29 +6,36 @@ const handler = NextAuth({
     CredentialsProvider({
       name: "Credentials",
       credentials: {
-        username: { label: "Email", type: "email" }, // NextAuth sends 'username'
+        username: { label: "Email", type: "email" },  // NextAuth sends 'username'
         password: { label: "Password", type: "password" }
       },
+      // credentials type explicitly allows for undefined, so we type it
       async authorize(credentials) {
-        // Call FastAPI backend
+        // Defensive: ensure we never return id as undefined
+        const username = credentials?.username ?? "";
+        const password = credentials?.password ?? "";
+        if (!username || !password) return null;
+
         const res = await fetch("http://127.0.0.1:8000/auth/login", {
           method: "POST",
           headers: { "Content-Type": "application/x-www-form-urlencoded" },
           body: new URLSearchParams({
-            username: credentials?.username || "", // Defensive: credentials can be undefined
-            password: credentials?.password || ""
+            username,
+            password
           })
         });
+
         if (!res.ok) return null;
         const data = await res.json();
-        // If login is valid, return a user object
+
+        // If login is valid, return a user object with required string properties
         if (data.access_token) {
           return {
-            id: credentials?.username,
-            name: credentials?.username,
-            email: credentials?.username,
-            accessToken: data.access_token
-          };
+            id: username,           // id MUST be a string
+            name: username,         // name MUST be a string
+            email: username,        // email MUST be a string
+            accessToken: data.access_token as string // mark as string for type
+          } as any; // Type assertion to avoid TypeScript adapter/NextAuth type confusion
         }
         return null;
       }
@@ -43,13 +50,15 @@ const handler = NextAuth({
   },
   callbacks: {
     async jwt({ token, user }) {
-      // user is only defined at login
-      if (user) token.accessToken = (user as any).accessToken;
+      // Only set accessToken if user is defined
+      if (user && "accessToken" in user) {
+        token.accessToken = (user as any).accessToken;
+      }
       return token;
     },
     async session({ session, token }) {
-      // Make accessToken available in client session
-      session.accessToken = token.accessToken;
+      // Expose accessToken on client session
+      (session as any).accessToken = token.accessToken;
       return session;
     }
   }
