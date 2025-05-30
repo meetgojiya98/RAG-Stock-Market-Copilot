@@ -62,12 +62,12 @@
 
 "use client";
 import React, { useState, useEffect } from "react";
-import StockPriceCard from "../components/StockPriceCard";
-import Chart from "../components/Chart";
-import NewsFeed from "../components/NewsFeed";
-import AskAI from "../components/AskAI";
-import SearchBar from "../components/SearchBar";
-import sp500 from "./data/sp500.json"; // adjust path if needed
+import StockPriceCard from "../../components/StockPriceCard";
+import Chart from "../../components/Chart";
+import NewsFeed from "../../components/NewsFeed";
+import AskAI from "../../components/AskAI";
+import SearchBar from "../../components/SearchBar";
+import sp500 from ".././data/sp500.json"; // adjust path if needed
 
 const PRESETS = ["AAPL", "MSFT", "GOOGL", "TSLA", "AMZN"];
 
