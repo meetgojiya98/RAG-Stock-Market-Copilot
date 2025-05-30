@@ -15,6 +15,7 @@ import yfinance as yf
 from dotenv import load_dotenv
 from collections import defaultdict
 from statistics import mean, stdev
+from fastapi import Query
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 load_dotenv(os.path.join(BASE_DIR, ".env.local"))
@@ -348,12 +349,29 @@ def get_price(symbol: str):
         return {"price": None, "change": None, "error": str(e)}
 
 @app.get("/chart/{symbol}")
-def get_chart(symbol: str):
+def get_chart(symbol: str, range: str = "1mo"):
     try:
         end = datetime.now()
-        start = end - timedelta(days=30)
+        if range == "1mo":
+            start = end - timedelta(days=30)
+            interval = "1d"
+        elif range == "6mo":
+            start = end - timedelta(days=182)
+            interval = "1d"
+        elif range == "1y":
+            start = end - timedelta(days=365)
+            interval = "1d"
+        elif range == "5y":
+            start = end - timedelta(days=1825)
+            interval = "1wk"
+        else:  # max
+            start = None
+            interval = "1mo"
         ticker = yf.Ticker(symbol)
-        hist = ticker.history(start=start, end=end, interval="1d")
+        if start:
+            hist = ticker.history(start=start, end=end, interval=interval)
+        else:
+            hist = ticker.history(period="max", interval=interval)
         if hist.empty or 'Close' not in hist.columns:
             return {"data": []}
         data = [
