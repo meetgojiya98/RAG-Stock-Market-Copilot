@@ -10,6 +10,10 @@ const handler = NextAuth({
         password: { label: "Password", type: "password" }
       },
       async authorize(credentials) {
+        // Type guard to avoid TypeScript error
+        if (!credentials) {
+          throw new Error("No credentials provided");
+        }
         // Call FastAPI backend
         const res = await fetch("http://127.0.0.1:8000/auth/login", {
           method: "POST",
