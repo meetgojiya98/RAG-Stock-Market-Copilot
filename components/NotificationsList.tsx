@@ -6,7 +6,7 @@ export default function NotificationsList() {
   const [notifs, setNotifs] = useState<any[]>([]);
   useEffect(() => {
     const token = localStorage.getItem("access_token");
-    fetch("http://localhost:8000/notifications", {
+    fetch(`${process.env.NEXT_PUBLIC_API_BASE}/notifications`, {
       headers: { Authorization: `Bearer ${token}` },
     })
       .then(r => r.json())

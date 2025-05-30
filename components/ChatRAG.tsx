@@ -13,7 +13,7 @@ export default function ChatRAG({ stock }) {
     if (!query) return;
     setLoading(true);
     // Call your RAG backend here:
-    const res = await fetch("http://localhost:8000/api/ask", {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}/api/ask`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ question: query, symbol: stock.symbol }),

@@ -8,7 +8,7 @@ export default function PortfolioPage() {
 
   const fetchPortfolio = async () => {
     const token = localStorage.getItem("access_token");
-    const res = await fetch("http://localhost:8000/portfolio", {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}/portfolio`, {
       headers: { Authorization: `Bearer ${token}` }
     });
     setPortfolio(await res.json());

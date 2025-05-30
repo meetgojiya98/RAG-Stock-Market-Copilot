@@ -12,7 +12,7 @@ export default function LoginPage() {
     e.preventDefault();
     setError("");
     try {
-      const resp = await fetch("http://localhost:8000/auth/login", {
+      const resp = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}/auth/login`, {
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
         body: new URLSearchParams({ username: email, password }),

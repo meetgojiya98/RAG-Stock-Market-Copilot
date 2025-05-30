@@ -12,7 +12,7 @@ export default function SignupPage() {
   async function handleSignup(e) {
     e.preventDefault();
     setError("");
-    const resp = await fetch("http://localhost:8000/auth/register", {
+    const resp = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}/auth/register`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email, password, username }),

@@ -8,7 +8,7 @@ export default function PortfolioCSVManager({ onImported }) {
     if (!file) return;
     const formData = new FormData();
     formData.append("file", file);
-    await fetch("http://localhost:8000/portfolio/import", {
+    await fetch(`${process.env.NEXT_PUBLIC_API_BASE}/portfolio/import`, {
       method: "POST",
       headers: { Authorization: `Bearer ${localStorage.getItem("access_token")}` },
       body: formData,
@@ -17,7 +17,7 @@ export default function PortfolioCSVManager({ onImported }) {
   };
 
   const handleExport = () => {
-    fetch("http://localhost:8000/portfolio/export", {
+    fetch(`${process.env.NEXT_PUBLIC_API_BASE}/portfolio/export`, {
       headers: { Authorization: `Bearer ${localStorage.getItem("access_token")}` },
     })
       .then(res => res.blob())

@@ -15,7 +15,7 @@ export default function AdvancedAnalyticsPanel({ portfolio }) {
     const allocation = {};
     portfolio.forEach(row => allocation[row.symbol] = row.shares);
 
-    fetch("http://localhost:8000/analytics/advanced", {
+    fetch(`${process.env.NEXT_PUBLIC_API_BASE}/analytics/advanced`, {
       method: "POST",
       headers: { "Content-Type": "application/json", Authorization: `Bearer ${localStorage.getItem("access_token")}` },
       body: JSON.stringify({ symbols, allocation }),

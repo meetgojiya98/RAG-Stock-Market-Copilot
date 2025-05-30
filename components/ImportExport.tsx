@@ -11,7 +11,7 @@ export default function ImportExport() {
     const rows = text.split("\n").map(line => line.split(","));
     const token = localStorage.getItem("access_token");
     for (const [symbol, shares] of rows.filter(r => r.length === 2)) {
-      await fetch("http://localhost:8000/portfolio", {
+      await fetch(`${process.env.NEXT_PUBLIC_API_BASE}/portfolio`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -25,7 +25,7 @@ export default function ImportExport() {
 
   const handleExport = async () => {
     const token = localStorage.getItem("access_token");
-    const res = await fetch("http://localhost:8000/portfolio", {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}/portfolio`, {
       headers: { Authorization: `Bearer ${token}` }
     });
     const data = await res.json();

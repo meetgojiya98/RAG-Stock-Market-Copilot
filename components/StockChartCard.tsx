@@ -22,7 +22,7 @@ export default function StockChartCard({ symbol = "AAPL" }) {
   useEffect(() => {
     async function fetchData() {
       setLoading(true);
-      const res = await fetch(`http://localhost:8000/history/${symbol}?range=${range}`);
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}/history/${symbol}?range=${range}`);
       const data = await res.json();
       // Assume data: [{ date: "2024-05-01", price: 199.95 }, ...]
       setChartData({

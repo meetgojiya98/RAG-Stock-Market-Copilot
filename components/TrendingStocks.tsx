@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 export default function TrendingStocks() {
   const [trending, setTrending] = useState<any[]>([]);
   useEffect(() => {
-    fetch("http://localhost:8000/trending")
+    fetch(`${process.env.NEXT_PUBLIC_API_BASE}/trending`)
       .then(r => r.json())
       .then(setTrending);
   }, []);

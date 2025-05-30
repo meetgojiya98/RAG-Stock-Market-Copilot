@@ -8,7 +8,7 @@ export default function WatchlistTable() {
 
   async function fetchWatchlist() {
     const token = localStorage.getItem("access_token");
-    const resp = await fetch("http://localhost:8000/watchlist", {
+    const resp = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}/watchlist`, {
       headers: { Authorization: `Bearer ${token}` },
     });
     setWatchlist(await resp.json());
@@ -20,7 +20,7 @@ export default function WatchlistTable() {
     e.preventDefault();
     setError("");
     const token = localStorage.getItem("access_token");
-    const resp = await fetch("http://localhost:8000/watchlist", {
+    const resp = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}/watchlist`, {
       method: "POST",
       headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
       body: JSON.stringify({ symbol }),
@@ -32,7 +32,7 @@ export default function WatchlistTable() {
 
   async function removeStock(sym: string) {
     const token = localStorage.getItem("access_token");
-    await fetch(`http://localhost:8000/watchlist?symbol=${sym}`, {
+    await fetch(`${process.env.NEXT_PUBLIC_API_BASE}/watchlist?symbol=${sym}`, {
       method: "DELETE",
       headers: { Authorization: `Bearer ${token}` },
     });

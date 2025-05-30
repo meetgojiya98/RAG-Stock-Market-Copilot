@@ -13,7 +13,7 @@ export default function PortfolioTable({ onPortfolioChange }: { onPortfolioChang
   const fetchPortfolio = async () => {
     setLoading(true);
     const token = localStorage.getItem("access_token");
-    const res = await fetch("http://localhost:8000/portfolio", {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}/portfolio`, {
       headers: { Authorization: `Bearer ${token}` }
     });
     const data = await res.json();
@@ -22,7 +22,7 @@ export default function PortfolioTable({ onPortfolioChange }: { onPortfolioChang
 
     // Fetch real prices
     for (const row of data || []) {
-      fetch(`http://localhost:8000/price/${row.symbol}`)
+      fetch(`${process.env.NEXT_PUBLIC_API_BASE}/price/${row.symbol}`)
         .then(r => r.json())
         .then(p => setPrices(prices => ({ ...prices, [row.symbol]: p.price })));
     }
@@ -35,7 +35,7 @@ export default function PortfolioTable({ onPortfolioChange }: { onPortfolioChang
     e.preventDefault();
     setError("");
     const token = localStorage.getItem("access_token");
-    const res = await fetch("http://localhost:8000/portfolio", {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}/portfolio`, {
       method: "POST",
       headers: {
         "Authorization": `Bearer ${token}`,
@@ -53,7 +53,7 @@ export default function PortfolioTable({ onPortfolioChange }: { onPortfolioChang
 
   const handleRemove = async (sym: string) => {
     const token = localStorage.getItem("access_token");
-    await fetch(`http://localhost:8000/portfolio?symbol=${sym}`, {
+    await fetch(`${process.env.NEXT_PUBLIC_API_BASE}/portfolio?symbol=${sym}`, {
       method: "DELETE",
       headers: { Authorization: `Bearer ${token}` }
     });

@@ -35,7 +35,7 @@ export default function ProfilePage() {
       setLoading(false);
       return;
     }
-    fetch("http://localhost:8000/auth/me", {
+    fetch(`${process.env.NEXT_PUBLIC_API_BASE}/auth/me`, {
       headers: { Authorization: `Bearer ${token}` }
     })
       .then(r => r.json())

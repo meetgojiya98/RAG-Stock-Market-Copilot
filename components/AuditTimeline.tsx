@@ -4,7 +4,7 @@ export default function AuditTimeline() {
   const [timeline, setTimeline] = useState<any[]>([]);
   useEffect(() => {
     const token = localStorage.getItem("access_token");
-    fetch("http://localhost:8000/audit", {
+    fetch(`${process.env.NEXT_PUBLIC_API_BASE}/audit`, {
       headers: { Authorization: `Bearer ${token}` },
     })
       .then(r => r.json())

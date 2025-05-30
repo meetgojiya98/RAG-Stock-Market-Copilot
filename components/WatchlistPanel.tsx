@@ -9,7 +9,7 @@ export default function WatchlistPanel() {
 
   const fetchWatchlist = async () => {
     const token = localStorage.getItem("access_token");
-    const res = await fetch("http://localhost:8000/watchlist", {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}/watchlist`, {
       headers: { Authorization: `Bearer ${token}` }
     });
     const wl = await res.json();
@@ -17,7 +17,7 @@ export default function WatchlistPanel() {
 
     // Fetch live prices
     for (const row of wl) {
-      fetch(`http://localhost:8000/price/${row.symbol}`)
+      fetch(`${process.env.NEXT_PUBLIC_API_BASE}/price/${row.symbol}`)
         .then(r => r.json())
         .then(p => setPrices(prices => ({ ...prices, [row.symbol]: p.price })));
     }
@@ -27,13 +27,13 @@ export default function WatchlistPanel() {
 
   // Trending stocks
   useEffect(() => {
-    fetch("http://localhost:8000/trending").then(r => r.json()).then(setTrending);
+    fetch(`${process.env.NEXT_PUBLIC_API_BASE}/trending`).then(r => r.json()).then(setTrending);
   }, []);
 
   const handleAdd = async (e) => {
     e.preventDefault();
     const token = localStorage.getItem("access_token");
-    await fetch("http://localhost:8000/watchlist", {
+    await fetch(`${process.env.NEXT_PUBLIC_API_BASE}/watchlist`, {
       method: "POST",
       headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
       body: JSON.stringify({ symbol }),
@@ -44,7 +44,7 @@ export default function WatchlistPanel() {
 
   const handleRemove = async (sym) => {
     const token = localStorage.getItem("access_token");
-    await fetch(`http://localhost:8000/watchlist?symbol=${sym}`, {
+    await fetch(`${process.env.NEXT_PUBLIC_API_BASE}/watchlist?symbol=${sym}`, {
       method: "DELETE",
       headers: { Authorization: `Bearer ${token}` },
     });
