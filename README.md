@@ -278,5 +278,3 @@ Stock price data from [Yahoo Finance](https://finance.yahoo.com/), news via [New
 **MIT License. Fork, remix, and have fun!**
 
 ---
-
-If you have further questions or want help deploying, just ask!
