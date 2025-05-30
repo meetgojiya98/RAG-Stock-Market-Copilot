@@ -20,9 +20,6 @@ export default function PortfolioPage() {
     <div className="max-w-xl mx-auto py-12">
       <h2 className="text-2xl font-bold mb-6">Your Portfolio</h2>
       <PortfolioTable onChange={fetchPortfolio} />
-      <div className="mt-8">
-        <AdvancedAnalyticsPanel portfolio={portfolio} />
-      </div>
     </div>
   );
 }
