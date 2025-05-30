@@ -1,9 +1,12 @@
+// app/page.tsx
 "use client";
 import React, { useState, useEffect } from "react";
 import StockPriceCard from "../components/StockPriceCard";
 import Chart from "../components/Chart";
 import NewsFeed from "../components/NewsFeed";
 import AskAI from "../components/AskAI";
+import SearchBar from "../components/SearchBar";
+import sp500 from "./data/sp500.json"; // adjust path if needed
 
 const PRESETS = ["AAPL", "MSFT", "GOOGL", "TSLA", "AMZN"];
 
@@ -15,9 +18,11 @@ export default function Home() {
   const [news, setNews] = useState<any[]>([]);
   const [aiAnswer, setAiAnswer] = useState("");
   const [aiLoading, setAiLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
   useEffect(() => {
+    setLoading(true);
     setError("");
     Promise.all([
       fetch(`http://localhost:8000/price/${symbol}`).then(r => r.json()),
@@ -28,7 +33,11 @@ export default function Home() {
       setChange(priceRes.change);
       setChartData(chartRes.data || []);
       setNews(newsRes.news || []);
-    }).catch(() => setError("Could not fetch data. Please check your backend."));
+      setLoading(false);
+    }).catch(() => {
+      setError("Could not fetch data. Please check your backend.");
+      setLoading(false);
+    });
   }, [symbol]);
 
   const askAI = async (question: string) => {
@@ -49,34 +58,25 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-orange-200 to-white">
-      <div className="bg-orange-600 p-4 flex justify-between items-center">
-        <span className="text-white font-bold text-xl">RAG Stock Copilot</span>
-        <button className="bg-black text-white px-4 py-1 rounded">Sign in</button>
-      </div>
-      <div className="container mx-auto px-2 py-8">
-        <div className="mb-4 flex items-center gap-2">
-          <label htmlFor="symbol" className="font-semibold">Stock Symbol:</label>
-          <input
-            value={symbol}
-            onChange={e => setSymbol(e.target.value.toUpperCase())}
-            className="border px-2 py-1 rounded"
-            id="symbol"
-            style={{ width: 80 }}
-          />
+    <div className="min-h-screen bg-gradient-to-b from-orange-100 to-white dark:from-zinc-900 dark:to-black transition-colors">
+      <div className="container mx-auto px-6 py-12">
+        <div className="mb-10 flex flex-wrap items-center gap-4">
+          <SearchBar stocks={sp500} onSelect={setSymbol} />
+          <label htmlFor="symbol" className="font-semibold dark:text-white">Quick presets:</label>
           {PRESETS.map(sym => (
             <button key={sym}
               onClick={() => setSymbol(sym)}
-              className={`px-2 py-1 border rounded ${sym === symbol ? "bg-orange-400 text-white font-bold" : "bg-white text-orange-700"}`}>{sym}</button>
+              className={`px-3 py-1 border rounded transition 
+                ${sym === symbol ? "bg-orange-400 dark:bg-orange-600 text-white font-bold" : "bg-white dark:bg-zinc-800 text-orange-700 dark:text-orange-300"}`}>{sym}</button>
           ))}
         </div>
         {error ? (
-          <div className="text-red-600 font-bold">{error}</div>
+          <div className="text-red-600 dark:text-red-400 font-bold">{error}</div>
         ) : (
-          <div className="grid grid-cols-2 gap-6 mb-6">
-            <StockPriceCard symbol={symbol} price={price} change={change} />
-            <Chart data={chartData} />
-            <NewsFeed news={news} />
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+            <StockPriceCard symbol={symbol} price={price} change={change} loading={loading} />
+            <Chart data={chartData} loading={loading} />
+            <NewsFeed news={news} loading={loading} />
             <AskAI askAI={askAI} aiAnswer={aiAnswer} loading={aiLoading} />
           </div>
         )}

@@ -1,4 +1,8 @@
 import sqlite3
+from fastapi import APIRouter, HTTPException
+from pydantic import BaseModel
+
+router = APIRouter()
 
 def get_db():
     conn = sqlite3.connect("portfolio.db")
@@ -11,21 +15,31 @@ def get_db():
     )""")
     return conn
 
-def add_stock(user, symbol, shares):
+class PortfolioIn(BaseModel):
+    user: str
+    symbol: str
+    shares: float
+
+@router.post("/portfolio/add")
+def add_stock(item: PortfolioIn):
     conn = get_db()
-    conn.execute("INSERT INTO portfolio (user, symbol, shares) VALUES (?, ?, ?)", (user, symbol, shares))
+    conn.execute("INSERT INTO portfolio (user, symbol, shares) VALUES (?, ?, ?)", (item.user, item.symbol, item.shares))
     conn.commit()
     conn.close()
+    return {"success": True}
 
-def get_portfolio(user):
+@router.get("/portfolio/{user}")
+def get_portfolio(user: str):
     conn = get_db()
     cur = conn.execute("SELECT symbol, shares FROM portfolio WHERE user=?", (user,))
     data = cur.fetchall()
     conn.close()
     return [{"symbol": row[0], "shares": row[1]} for row in data]
 
-def remove_stock(user, symbol):
+@router.post("/portfolio/remove")
+def remove_stock(item: PortfolioIn):
     conn = get_db()
-    conn.execute("DELETE FROM portfolio WHERE user=? AND symbol=?", (user, symbol))
+    conn.execute("DELETE FROM portfolio WHERE user=? AND symbol=?", (item.user, item.symbol))
     conn.commit()
     conn.close()
+    return {"success": True}

@@ -1,71 +1,55 @@
 "use client";
-import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 
-export default function Portfolio() {
-  const { data: session } = useSession();
-  const [portfolio, setPortfolio] = useState<any[]>([]);
-  const [symbol, setSymbol] = useState("");
-  const [shares, setShares] = useState("");
-  const user = session?.user?.email || "guest";
-
-  async function fetchPortfolio() {
-    const res = await fetch(`http://localhost:8000/portfolio/${user}`);
-    const data = await res.json();
-    setPortfolio(data.portfolio);
-  }
-
-  async function addStock() {
-    await fetch("http://localhost:8000/portfolio/add", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ user, symbol, shares: Number(shares) }),
-    });
-    setSymbol("");
-    setShares("");
-    fetchPortfolio();
-  }
-
-  async function removeStock(s: string) {
-    await fetch("http://localhost:8000/portfolio/remove", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ user, symbol: s }),
-    });
-    fetchPortfolio();
-  }
+export default function Portfolio({ symbol, onSelect }) {
+  const [portfolio, setPortfolio] = useState<string[]>([]);
 
   useEffect(() => {
-    if (user) fetchPortfolio();
-  }, [user]);
+    const data = localStorage.getItem("portfolio");
+    setPortfolio(data ? JSON.parse(data) : []);
+  }, []);
+
+  const addStock = (sym: string) => {
+    if (!portfolio.includes(sym)) {
+      const updated = [...portfolio, sym];
+      setPortfolio(updated);
+      localStorage.setItem("portfolio", JSON.stringify(updated));
+    }
+  };
+
+  const removeStock = (sym: string) => {
+    const updated = portfolio.filter(s => s !== sym);
+    setPortfolio(updated);
+    localStorage.setItem("portfolio", JSON.stringify(updated));
+  };
 
   return (
-    <div className="bg-white p-4 rounded shadow border-navy border">
-      <h3 className="font-bold text-navy mb-2">Portfolio</h3>
-      <div className="flex gap-2 mb-2">
-        <input
-          value={symbol}
-          onChange={e => setSymbol(e.target.value.toUpperCase())}
-          placeholder="Symbol"
-          className="border p-1 rounded w-24"
-        />
-        <input
-          value={shares}
-          type="number"
-          onChange={e => setShares(e.target.value)}
-          placeholder="Shares"
-          className="border p-1 rounded w-24"
-        />
-        <button onClick={addStock} className="bg-saffron text-white px-2 py-1 rounded">Add</button>
+    <div className="bg-white dark:bg-zinc-900 p-4 rounded shadow mb-6">
+      <div className="flex items-center mb-2">
+        <span className="font-bold">My Portfolio</span>
+        <button className="ml-auto bg-orange-500 text-white px-2 py-1 rounded"
+          onClick={() => addStock(symbol)}>
+          + Add {symbol}
+        </button>
       </div>
-      <ul>
-        {portfolio.map((item, i) => (
-          <li key={i} className="flex justify-between items-center">
-            <span>{item.symbol}: {item.shares} shares</span>
-            <button onClick={() => removeStock(item.symbol)} className="text-red-500 px-2">Remove</button>
-          </li>
-        ))}
-      </ul>
+      {portfolio.length === 0 ? (
+        <div className="text-gray-500">No stocks added yet.</div>
+      ) : (
+        <ul>
+          {portfolio.map(sym => (
+            <li key={sym} className="flex items-center py-1">
+              <span
+                className="cursor-pointer font-mono"
+                onClick={() => onSelect(sym)}
+              >{sym}</span>
+              <button
+                className="ml-2 text-xs text-red-500"
+                onClick={() => removeStock(sym)}
+              >Remove</button>
+            </li>
+          ))}
+        </ul>
+      )}
     </div>
   );
 }
