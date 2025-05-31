@@ -42,14 +42,14 @@ export default function WatchlistPanel() {
     fetchWatchlist();
   };  
 
-  const handleRemove = async (sym) => {
+  const handleRemove = async (sym: string) => {
     const token = localStorage.getItem("access_token");
     await fetch(`${process.env.NEXT_PUBLIC_API_BASE}/watchlist?symbol=${sym}`, {
       method: "DELETE",
       headers: { Authorization: `Bearer ${token}` },
     });
     fetchWatchlist();
-  };
+  };  
 
   return (
     <div className="bg-white dark:bg-zinc-900 p-6 rounded-xl shadow text-black dark:text-white">
