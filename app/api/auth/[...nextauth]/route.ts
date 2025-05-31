@@ -16,14 +16,14 @@ const handler = NextAuth({
         const password = credentials?.password ?? "";
         if (!username || !password) return null;
 
-        const res = await fetch("https://stock-market-copilot.onrender.com/auth/login", {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}/auth/login`, {
           method: "POST",
           headers: { "Content-Type": "application/x-www-form-urlencoded" },
           body: new URLSearchParams({
             username,
             password
           })
-        });
+        });        
 
         if (!res.ok) return null;
         const data = await res.json();
