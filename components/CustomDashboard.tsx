@@ -1,20 +1,20 @@
 "use client";
 import { useState } from "react";
-// Fix: DndContext comes from @dnd-kit/core, rest from @dnd-kit/sortable
 import { DndContext } from "@dnd-kit/core";
 import { useSortable, arrayMove, SortableContext, horizontalListSortingStrategy } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import StockChart from "./StockChart";
 import Fundamentals from "./Fundamentals";
 
-const widgetMap: Record<string, React.ComponentType<{ stock: any }>> = {
+// Fix: Both expect `symbol`, not `stock`
+const widgetMap: Record<string, React.ComponentType<{ symbol: string }>> = {
   Chart: StockChart,
   Fundamentals: Fundamentals,
 };
 
 const defaultWidgets = ["Chart", "Fundamentals"];
 
-export default function CustomDashboard({ stock }: { stock: any }) {
+export default function CustomDashboard({ stock }: { stock: { symbol: string } }) {
   const [widgets, setWidgets] = useState(defaultWidgets);
 
   return (
@@ -34,7 +34,7 @@ export default function CustomDashboard({ stock }: { stock: any }) {
         <SortableContext items={widgets} strategy={horizontalListSortingStrategy}>
           <div className="flex gap-6">
             {widgets.map((name) => (
-              <SortableWidget key={name} id={name} stock={stock} />
+              <SortableWidget key={name} id={name} symbol={stock.symbol} />
             ))}
           </div>
         </SortableContext>
@@ -43,7 +43,7 @@ export default function CustomDashboard({ stock }: { stock: any }) {
   );
 }
 
-function SortableWidget({ id, stock }: { id: string, stock: any }) {
+function SortableWidget({ id, symbol }: { id: string, symbol: string }) {
   const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id });
   const Widget = widgetMap[id];
   return (
@@ -58,7 +58,7 @@ function SortableWidget({ id, stock }: { id: string, stock: any }) {
       }}
       className="bg-card dark:bg-darkcard shadow-card rounded-xl p-4 w-80"
     >
-      <Widget stock={stock} />
+      <Widget symbol={symbol} />
     </div>
   );
 }
