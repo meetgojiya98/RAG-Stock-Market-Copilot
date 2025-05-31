@@ -19,7 +19,7 @@ openai
 fastapi
 uvicorn
 sqlmodel
-jose
+python-jose
 passlib[bcrypt]
 yfinance
 requests
