@@ -4,8 +4,8 @@ import { useRef } from "react";
 export default function ImportExport() {
   const fileRef = useRef<HTMLInputElement>(null);
 
-  const handleImport = async (e) => {
-    const file = e.target.files[0];
+  const handleImport = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?[0];
     if (!file) return;
     const text = await file.text();
     const rows = text.split("\n").map(line => line.split(","));
