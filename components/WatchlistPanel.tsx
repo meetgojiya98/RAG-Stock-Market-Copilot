@@ -1,11 +1,22 @@
 "use client";
 import { useState, useEffect } from "react";
 
+// 1. Type for each item in watchlist/trending
+type WatchlistItem = {
+  symbol: string;
+  // add other fields if you expect them!
+};
+
+type TrendingItem = {
+  symbol: string;
+  count: number;
+};
+
 export default function WatchlistPanel() {
-  const [watchlist, setWatchlist] = useState([]);
+  const [watchlist, setWatchlist] = useState<WatchlistItem[]>([]);
   const [symbol, setSymbol] = useState("");
-  const [prices, setPrices] = useState({});
-  const [trending, setTrending] = useState([]);
+  const [prices, setPrices] = useState<{ [key: string]: number }>({});
+  const [trending, setTrending] = useState<TrendingItem[]>([]);
 
   const fetchWatchlist = async () => {
     const token = localStorage.getItem("access_token");
