@@ -26,7 +26,10 @@ export default function NotificationsPanel() {
     fetchNotifications();
     // Live notifications via websocket!
     const token = localStorage.getItem("access_token");
-    ws.current = new WebSocket(`ws://localhost:8000/ws/notifications?token=${token}`);
+    const apiBase =
+    process.env.NEXT_PUBLIC_API_BASE?.replace(/^http/, "ws") ?? "ws://localhost:8000";
+    ws.current = new WebSocket(`${apiBase}/ws/notifications?token=${token}`);
+
     ws.current.onmessage = event => {
       const notif: Notification = JSON.parse(event.data);
       setNotifications(prev => [{ ...notif }, ...prev]);

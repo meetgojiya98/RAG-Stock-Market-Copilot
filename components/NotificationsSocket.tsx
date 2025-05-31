@@ -11,7 +11,10 @@ const NotificationsSocket: React.FC<Props> = ({ onNotification }) => {
     const token = localStorage.getItem("access_token");
     if (!token) return;
 
-    const ws = new WebSocket(`ws://localhost:8000/ws/notifications?token=${token}`);
+    const apiBase =
+    process.env.NEXT_PUBLIC_API_BASE?.replace(/^http/, "ws") ?? "ws://localhost:8000";
+    const ws = new WebSocket(`${apiBase}/ws/notifications?token=${token}`);
+
     ws.onmessage = (event) => {
       try {
         onNotification(JSON.parse(event.data));
