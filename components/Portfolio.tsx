@@ -1,7 +1,13 @@
 "use client";
 import { useEffect, useState } from "react";
 
-export default function Portfolio({ symbol, onSelect }) {
+// Define the props type
+type PortfolioProps = {
+  symbol: string;
+  onSelect: (symbol: string) => void;
+};
+
+export default function Portfolio({ symbol, onSelect }: PortfolioProps) {
   const [portfolio, setPortfolio] = useState<string[]>([]);
 
   useEffect(() => {
