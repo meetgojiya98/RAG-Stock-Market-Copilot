@@ -4,9 +4,17 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { MessageSquare } from "lucide-react";
 
-export default function ChatRAG({ stock }) {
+// Type the stock prop. If you know more, update this type!
+interface ChatRAGProps {
+  stock: {
+    symbol: string;
+    [key: string]: any;
+  };
+}
+
+export default function ChatRAG({ stock }: ChatRAGProps) {
   const [query, setQuery] = useState("");
-  const [messages, setMessages] = useState<{q: string, a: string}[]>([]);
+  const [messages, setMessages] = useState<{ q: string; a: string }[]>([]);
   const [loading, setLoading] = useState(false);
 
   async function handleAsk() {
@@ -34,16 +42,28 @@ export default function ChatRAG({ stock }) {
           onKeyDown={e => { if (e.key === "Enter") handleAsk(); }}
           disabled={loading}
         />
-        <Button onClick={handleAsk} disabled={loading} className="bg-[#FFA500] text-black font-bold hover:bg-[#FFD580]">
+        <Button
+          onClick={handleAsk}
+          disabled={loading}
+          className="bg-[#FFA500] text-black font-bold hover:bg-[#FFD580]"
+        >
           {loading ? "..." : "Ask"}
         </Button>
       </div>
       <div>
-        {messages.length === 0 && <div className="text-gray-400 text-center py-6 italic">Start a conversation about {stock.symbol}!</div>}
+        {messages.length === 0 && (
+          <div className="text-gray-400 text-center py-6 italic">
+            Start a conversation about {stock.symbol}!
+          </div>
+        )}
         {messages.map((m, i) => (
           <div key={i} className="mb-6">
-            <div className="font-semibold text-[#131D3B]">Q: <span>{m.q}</span></div>
-            <div className="ml-2 text-gray-700 border-l-2 border-[#FFA500] pl-2">A: {m.a}</div>
+            <div className="font-semibold text-[#131D3B]">
+              Q: <span>{m.q}</span>
+            </div>
+            <div className="ml-2 text-gray-700 border-l-2 border-[#FFA500] pl-2">
+              A: {m.a}
+            </div>
           </div>
         ))}
       </div>
