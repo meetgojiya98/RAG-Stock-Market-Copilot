@@ -7,11 +7,12 @@ type Notification = {
   symbol: string;
   message: string;
   time: string;
-  [key: string]: any; // If you have other fields, adjust as needed
+  [key: string]: any;
 };
 
-export default function NotificationsList() {
+const NotificationsList: React.FC = () => {
   const [notifs, setNotifs] = useState<Notification[]>([]);
+  
   useEffect(() => {
     const token = localStorage.getItem("access_token");
     fetch(`${process.env.NEXT_PUBLIC_API_BASE}/notifications`, {
@@ -20,6 +21,7 @@ export default function NotificationsList() {
       .then(r => r.json())
       .then(setNotifs);
   }, []);
+
   return (
     <div>
       <NotificationsSocket onNotification={(n: Notification) => setNotifs(notifs => [n, ...notifs])} />
@@ -32,4 +34,6 @@ export default function NotificationsList() {
       </ul>
     </div>
   );
-}
+};
+
+export default NotificationsList;
