@@ -1,9 +1,17 @@
 "use client";
 import { useEffect, useState } from "react";
 
+// 1. Define the NewsItem type to satisfy TypeScript
+type NewsItem = {
+  url: string;
+  title: string;
+  source?: string;
+  publishedAt?: string;
+};
+
 export default function ResearchPanel() {
   const [symbol, setSymbol] = useState("AAPL");
-  const [news, setNews] = useState([]);
+  const [news, setNews] = useState<NewsItem[]>([]);
   const [query, setQuery] = useState("");
   const [aiAnswer, setAiAnswer] = useState("");
   const [loading, setLoading] = useState(false);
@@ -48,10 +56,23 @@ export default function ResearchPanel() {
             <span className="text-gray-500 dark:text-gray-400">No news available.</span>
           ) : (
             <ul className="space-y-1">
-              {news.slice(0, 5).map((n, i) => (
+              {news.slice(0, 5).map((n: NewsItem, i: number) => (
                 <li key={i} className="text-sm">
-                  <a href={n.url} className="text-blue-600 dark:text-blue-400 underline" target="_blank" rel="noopener noreferrer">{n.title}</a>
-                  <span className="text-gray-400 dark:text-gray-400 ml-1">({n.source}, {new Date(n.publishedAt).toLocaleDateString()})</span>
+                  <a
+                    href={n.url}
+                    className="text-blue-600 dark:text-blue-400 underline"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    {n.title}
+                  </a>
+                  <span className="text-gray-400 dark:text-gray-400 ml-1">
+                    ({n.source || "Unknown"},{" "}
+                    {n.publishedAt
+                      ? new Date(n.publishedAt).toLocaleDateString()
+                      : "Unknown"}
+                    )
+                  </span>
                 </li>
               ))}
             </ul>
@@ -66,7 +87,9 @@ export default function ResearchPanel() {
             onChange={e => setQuery(e.target.value)}
             placeholder="Ask about any stock..."
           />
-          <button type="submit" className="bg-orange-500 text-white px-4 py-1 rounded" disabled={loading || !query}>Ask</button>
+          <button type="submit" className="bg-orange-500 text-white px-4 py-1 rounded" disabled={loading || !query}>
+            Ask
+          </button>
         </form>
         {loading && <div className="text-gray-500 dark:text-gray-400">AI is thinking...</div>}
         {aiAnswer && <div className="bg-gray-100 dark:bg-zinc-800 p-2 rounded text-black dark:text-white">{aiAnswer}</div>}
