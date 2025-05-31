@@ -1,9 +1,17 @@
 "use client";
 import { useEffect, useState, useRef } from "react";
 
+// Define the type for a notification object.
+type Notification = {
+  symbol: string;
+  message: string;
+  time: string;
+  [key: string]: any;
+};
+
 export default function NotificationsPanel() {
-  const [notifications, setNotifications] = useState([]);
-  const ws = useRef(null);
+  const [notifications, setNotifications] = useState<Notification[]>([]);
+  const ws = useRef<WebSocket | null>(null);
 
   // Fetch latest notifications on load
   const fetchNotifications = async () => {
@@ -20,10 +28,12 @@ export default function NotificationsPanel() {
     const token = localStorage.getItem("access_token");
     ws.current = new WebSocket(`ws://localhost:8000/ws/notifications?token=${token}`);
     ws.current.onmessage = event => {
-      const notif = JSON.parse(event.data);
+      const notif: Notification = JSON.parse(event.data);
       setNotifications(prev => [{ ...notif }, ...prev]);
     };
-    return () => ws.current?.close();
+    return () => {
+      ws.current?.close();
+    };
   }, []);
 
   return (
@@ -33,10 +43,12 @@ export default function NotificationsPanel() {
         <div className="text-gray-500 dark:text-gray-400">No notifications yet. Wait for a price alert or portfolio event!</div>
       )}
       <ul className="space-y-2">
-        {notifications.map((n, i) => (
+        {notifications.map((n: Notification, i: number) => (
           <li key={i} className="border-b border-zinc-200 dark:border-zinc-800 pb-2 text-sm">
             <b>{n.symbol}</b> — {n.message}{" "}
-            <span className="text-gray-400 dark:text-gray-500">({new Date(n.time).toLocaleString()})</span>
+            <span className="text-gray-400 dark:text-gray-500">
+              ({new Date(n.time).toLocaleString()})
+            </span>
           </li>
         ))}
       </ul>
