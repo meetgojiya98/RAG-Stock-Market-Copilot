@@ -1,45 +1,49 @@
 "use client";
 import React, { useState } from "react";
 
-export default function AskAI({ askAI, aiAnswer, loading }) {
+// Define types for props
+interface AskAIProps {
+  askAI: (q: string) => Promise<void>;
+  aiAnswer: string;
+  loading: boolean;
+}
+
+export default function AskAI({ askAI, aiAnswer, loading }: AskAIProps) {
   const [input, setInput] = useState("");
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (input.trim()) {
-      askAI(input);
-    }
+    if (!input.trim()) return;
+    askAI(input);
+    setInput("");
   };
 
   return (
-    <div className="rounded-2xl shadow-xl p-8 flex flex-col h-56 justify-between bg-white/80 dark:bg-gradient-to-br dark:from-zinc-900 dark:to-zinc-800 border border-zinc-100 dark:border-zinc-800 backdrop-blur">
-      <h2 className="font-bold text-base mb-2 text-orange-600 dark:text-orange-400">
-        Ask AI About Stocks
-      </h2>
-      <form onSubmit={handleSubmit} className="flex gap-2 mb-3">
+    <div className="bg-white dark:bg-zinc-900 rounded-xl shadow p-6 w-full mt-4">
+      <h3 className="font-semibold mb-3 text-orange-700 dark:text-orange-400">
+        Ask AI about this Stock
+      </h3>
+      <form onSubmit={handleSubmit} className="flex gap-2 mb-4">
         <input
           type="text"
-          className="flex-1 border rounded-lg px-3 py-2 dark:bg-zinc-800 dark:text-white bg-zinc-50"
-          placeholder="Ask about any stock..."
           value={input}
+          className="flex-1 rounded-l-lg px-3 py-2 border border-orange-300 dark:bg-zinc-800 dark:text-white"
           onChange={(e) => setInput(e.target.value)}
+          placeholder="Ask anything about this stock..."
           disabled={loading}
         />
         <button
           type="submit"
-          className="bg-gradient-to-r from-orange-400 to-yellow-400 dark:from-orange-500 dark:to-yellow-300 text-white dark:text-zinc-900 font-bold px-4 py-2 rounded-xl shadow hover:opacity-90 transition"
-          disabled={loading || !input.trim()}
+          className={`px-4 py-2 rounded-r-lg bg-orange-600 text-white font-bold transition ${
+            loading ? "opacity-60 cursor-not-allowed" : "hover:bg-orange-700"
+          }`}
+          disabled={loading}
         >
-          Ask
+          {loading ? "Thinking..." : "Ask"}
         </button>
       </form>
-      {/* Answer area with scrollable overflow */}
-      <div className="flex-1 overflow-y-auto min-h-[1.5rem] max-h-[4.5rem] pr-1">
-        {loading ? (
-          <span className="text-gray-500 dark:text-gray-300">Thinking...</span>
-        ) : aiAnswer ? (
-          <div className="mt-1 text-zinc-900 dark:text-zinc-100 whitespace-pre-line break-words">{aiAnswer}</div>
-        ) : null}
+      <div className="min-h-[2.5rem] text-gray-700 dark:text-gray-300">
+        {aiAnswer}
       </div>
     </div>
   );
