@@ -1,29 +1,16 @@
-// components/ThemeContext.tsx
-
-import { createContext, useContext, useState, ReactNode, useEffect } from "react";
+import React, { createContext, useContext, useState, useEffect } from "react";
 
 type Theme = "light" | "dark";
-type ThemeContextType = {
-  theme: Theme;
-  setTheme: (theme: Theme) => void;
-};
 
-const ThemeContext = createContext<ThemeContextType>({
+const ThemeContext = createContext<{ theme: Theme, setTheme: (t: Theme) => void }>({
   theme: "light",
   setTheme: () => {},
 });
 
-export function ThemeProvider({ children }: { children: ReactNode }) {
-  // Optional: Remember theme on reload (localStorage)
-  const [theme, setTheme] = useState<Theme>(
-    typeof window !== "undefined"
-      ? (localStorage.getItem("theme") as Theme) || "light"
-      : "light"
-  );
+export function ThemeProvider({ children }: { children: React.ReactNode }) {
+  const [theme, setTheme] = useState<Theme>("light");
 
   useEffect(() => {
-    localStorage.setItem("theme", theme);
-    // Optional: Add/remove dark class on <html>
     if (theme === "dark") {
       document.documentElement.classList.add("dark");
     } else {

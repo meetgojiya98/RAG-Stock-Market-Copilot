@@ -13,12 +13,14 @@ export const metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <>
-      <Providers>
-        <Header />
-        <main className="flex-1">{children}</main>
-        <Footer />
-      </Providers>
-    </>
+    <html lang="en" suppressHydrationWarning>
+      <body className="bg-gradient-to-b from-slate-50 to-zinc-100 dark:from-zinc-900 dark:to-zinc-950 min-h-screen flex flex-col">
+        <Providers>
+          <Header />
+          <main className="flex-1">{children}</main>
+          <Footer />
+        </Providers>
+      </body>
+    </html>
   );
 }
