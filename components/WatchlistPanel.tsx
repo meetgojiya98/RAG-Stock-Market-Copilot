@@ -30,7 +30,7 @@ export default function WatchlistPanel() {
     fetch(`${process.env.NEXT_PUBLIC_API_BASE}/trending`).then(r => r.json()).then(setTrending);
   }, []);
 
-  const handleAdd = async (e) => {
+  const handleAdd = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const token = localStorage.getItem("access_token");
     await fetch(`${process.env.NEXT_PUBLIC_API_BASE}/watchlist`, {
@@ -40,7 +40,7 @@ export default function WatchlistPanel() {
     });
     setSymbol("");
     fetchWatchlist();
-  };
+  };  
 
   const handleRemove = async (sym) => {
     const token = localStorage.getItem("access_token");
