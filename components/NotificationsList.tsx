@@ -2,8 +2,16 @@
 import { useEffect, useState } from "react";
 import NotificationsSocket from "./NotificationsSocket";
 
+// Define the type for a notification object.
+type Notification = {
+  symbol: string;
+  message: string;
+  time: string;
+  [key: string]: any; // If you have other fields, adjust as needed
+};
+
 export default function NotificationsList() {
-  const [notifs, setNotifs] = useState<any[]>([]);
+  const [notifs, setNotifs] = useState<Notification[]>([]);
   useEffect(() => {
     const token = localStorage.getItem("access_token");
     fetch(`${process.env.NEXT_PUBLIC_API_BASE}/notifications`, {
@@ -14,9 +22,9 @@ export default function NotificationsList() {
   }, []);
   return (
     <div>
-      <NotificationsSocket onNotification={n => setNotifs(notifs => [n, ...notifs])} />
+      <NotificationsSocket onNotification={(n: Notification) => setNotifs(notifs => [n, ...notifs])} />
       <ul>
-        {notifs.map((n, i) => (
+        {notifs.map((n: Notification, i: number) => (
           <li key={i} className="mb-2 border-b pb-2">
             <b>{n.symbol}</b>: {n.message} <span className="text-xs text-gray-500">{n.time}</span>
           </li>
