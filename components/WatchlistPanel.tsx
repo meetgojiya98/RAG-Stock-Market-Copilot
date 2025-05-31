@@ -49,7 +49,7 @@ export default function WatchlistPanel() {
       headers: { Authorization: `Bearer ${token}` },
     });
     fetchWatchlist();
-  };  
+  };   
 
   return (
     <div className="bg-white dark:bg-zinc-900 p-6 rounded-xl shadow text-black dark:text-white">
