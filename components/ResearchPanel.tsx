@@ -17,7 +17,7 @@ export default function ResearchPanel() {
   }, [symbol]);
 
   // Ask AI
-  const handleAsk = async (e) => {
+  const handleAsk = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
     setAiAnswer("");
