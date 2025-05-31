@@ -26,7 +26,7 @@ ACCESS_TOKEN_EXPIRE_MINUTES = 60 * 24 * 7
 NEWSAPI_KEY = os.environ.get("NEWSAPI_KEY", "")
 GROQ_API_KEY = os.environ.get("GROQ_API_KEY", "")
 
-ALLOWED_ORIGINS = ["https://stock-market-copilot.vercel.app/", "http://localhost:3000"]
+ALLOWED_ORIGINS = ["https://stock-market-copilot.vercel.app"]
 
 app = FastAPI()
 app.add_middleware(
