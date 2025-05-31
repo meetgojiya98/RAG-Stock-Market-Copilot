@@ -1,5 +1,5 @@
 import { useState } from "react";
-import STOCKS from "./stocklist.json"; // Array of { symbol, name }
+import STOCKS from "./Stocklist.json"; // Array of { symbol, name }
 
 export default function StockSearch({ onSelect }) {
   const [query, setQuery] = useState("");
