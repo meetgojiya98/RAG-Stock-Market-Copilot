@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import { Line } from "react-chartjs-2";
 import { Chart, LineElement, PointElement, LinearScale, CategoryScale, Tooltip, Legend, Filler } from "chart.js";
+import type { ChartData } from "chart.js";
 
 // Register Chart.js components
 Chart.register(LineElement, PointElement, LinearScale, CategoryScale, Tooltip, Legend, Filler);
@@ -16,7 +17,7 @@ const RANGE_LABELS = [
 
 export default function StockChartCard({ symbol = "AAPL" }) {
   const [range, setRange] = useState("1M");
-  const [chartData, setChartData] = useState(null);
+  const [chartData, setChartData] = useState<ChartData<"line"> | null>(null);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -26,10 +27,10 @@ export default function StockChartCard({ symbol = "AAPL" }) {
       const data = await res.json();
       // Assume data: [{ date: "2024-05-01", price: 199.95 }, ...]
       setChartData({
-        labels: data.map(d => d.date),
+        labels: data.map((d: any) => d.date),
         datasets: [{
           label: `${symbol} Price`,
-          data: data.map(d => d.price),
+          data: data.map((d: any) => d.price),
           borderColor: "#fb923c",
           backgroundColor: "rgba(251,146,60,0.1)",
           fill: true,
@@ -73,7 +74,7 @@ export default function StockChartCard({ symbol = "AAPL" }) {
                   mode: "index",
                   intersect: false,
                   callbacks: {
-                    label: ctx => `$${ctx.parsed.y.toFixed(2)}`
+                    label: (ctx: any) => `$${ctx.parsed.y.toFixed(2)}`
                   }
                 }
               },
