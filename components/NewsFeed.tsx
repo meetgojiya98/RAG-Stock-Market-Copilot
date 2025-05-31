@@ -1,4 +1,16 @@
-export default function NewsFeed({ news, loading = false }) {
+type NewsItem = {
+  title: string;
+  url: string;
+  source: string;
+  publishedAt?: string;
+};
+
+type NewsFeedProps = {
+  news: NewsItem[];
+  loading?: boolean;
+};
+
+export default function NewsFeed({ news, loading = false }: NewsFeedProps) {
   if (loading)
     return (
       <div className="rounded-2xl shadow-xl p-8 h-56 flex flex-col justify-center animate-pulse bg-white/80 dark:bg-gradient-to-br dark:from-zinc-900 dark:to-zinc-800 border border-zinc-100 dark:border-zinc-800 backdrop-blur">
