@@ -2,7 +2,7 @@
 import { useRef } from "react";
 
 export default function ImportExport() {
-  const fileRef = useRef();
+  const fileRef = useRef<HTMLInputElement>(null);
 
   const handleImport = async (e) => {
     const file = e.target.files[0];
