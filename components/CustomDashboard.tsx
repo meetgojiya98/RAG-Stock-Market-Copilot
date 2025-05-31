@@ -6,7 +6,7 @@ import { CSS } from "@dnd-kit/utilities";
 import StockChart from "./StockChart";
 import Fundamentals from "./Fundamentals";
 
-// Fix: Both expect `symbol`, not `stock`
+// Both widgets expect 'symbol' prop (string)
 const widgetMap: Record<string, React.ComponentType<{ symbol: string }>> = {
   Chart: StockChart,
   Fundamentals: Fundamentals,
@@ -43,7 +43,7 @@ export default function CustomDashboard({ stock }: { stock: { symbol: string } }
   );
 }
 
-function SortableWidget({ id, symbol }: { id: string, symbol: string }) {
+function SortableWidget({ id, symbol }: { id: string; symbol: string }) {
   const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id });
   const Widget = widgetMap[id];
   return (

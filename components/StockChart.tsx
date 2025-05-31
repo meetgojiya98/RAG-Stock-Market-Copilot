@@ -2,12 +2,11 @@
 import { useEffect, useRef } from "react";
 import Chart from "chart.js/auto";
 
-export default function StockChart({ symbol = "AAPL" }) {
+export default function StockChart({ symbol = "AAPL" }: { symbol?: string }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
     async function fetchAndDraw() {
-      // Alpha Vantage TIME_SERIES_DAILY (get your API key)
       const res = await fetch(
         `https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=${symbol}&apikey=P9VP18MVWWA1JY7B`
       );
