@@ -29,7 +29,7 @@ export default function ImportExport() {
       headers: { Authorization: `Bearer ${token}` }
     });
     const data = await res.json();
-    const csv = data.map(row => `${row.symbol},${row.shares}`).join("\n");
+    const csv = data.map((row: { symbol: string; shares: number }) => `${row.symbol},${row.shares}`).join("\n");
     const blob = new Blob([csv], { type: "text/csv" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
