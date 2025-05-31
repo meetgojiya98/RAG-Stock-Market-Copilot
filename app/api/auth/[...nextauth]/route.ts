@@ -16,7 +16,7 @@ const handler = NextAuth({
         const password = credentials?.password ?? "";
         if (!username || !password) return null;
 
-        const res = await fetch("http://127.0.0.1:8000/auth/login", {
+        const res = await fetch("https://stock-market-copilot.onrender.com/auth/login", {
           method: "POST",
           headers: { "Content-Type": "application/x-www-form-urlencoded" },
           body: new URLSearchParams({
