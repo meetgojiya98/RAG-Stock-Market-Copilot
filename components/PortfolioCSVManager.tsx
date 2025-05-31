@@ -1,9 +1,15 @@
 "use client";
 import { useRef } from "react";
-export default function PortfolioCSVManager({ onImported }) {
+
+// Define prop type for onImported callback
+type PortfolioCSVManagerProps = {
+  onImported: () => void;
+};
+
+export default function PortfolioCSVManager({ onImported }: PortfolioCSVManagerProps) {
   const fileRef = useRef<HTMLInputElement>(null);
 
-  const handleImport = async (e: any) => {
+  const handleImport = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
     const formData = new FormData();
@@ -34,7 +40,13 @@ export default function PortfolioCSVManager({ onImported }) {
 
   return (
     <div className="flex gap-3 items-center mb-4">
-      <input type="file" accept=".csv" ref={fileRef} style={{ display: "none" }} onChange={handleImport} />
+      <input
+        type="file"
+        accept=".csv"
+        ref={fileRef}
+        style={{ display: "none" }}
+        onChange={handleImport}
+      />
       <button onClick={() => fileRef.current?.click()} className="bg-blue-500 text-white px-3 py-1 rounded">Import CSV</button>
       <button onClick={handleExport} className="bg-green-500 text-white px-3 py-1 rounded">Export CSV</button>
     </div>
