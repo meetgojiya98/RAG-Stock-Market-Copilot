@@ -10,7 +10,6 @@ export default function SignupPage() {
   const router = useRouter();
 
   async function handleSignup(e: React.FormEvent<HTMLFormElement>) {
-    {
     e.preventDefault();
     setError("");
     const resp = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}/auth/register`, {
