@@ -1,36 +1,47 @@
 "use client";
 import { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
+
+// Lazy-load the Pie chart to avoid SSR issues with Chart.js
 const Pie = dynamic(() => import("react-chartjs-2").then(m => m.Pie), { ssr: false });
 
-export default function AdvancedAnalyticsPanel({ portfolio }) {
-  const [metrics, setMetrics] = useState([]);
-  const [sectorData, setSectorData] = useState({ labels: [], datasets: [{ data: [], backgroundColor: [] }] });
+type PortfolioItem = {
+  symbol: string;
+  shares: number;
+};
+
+interface PortfolioHistoryProps {
+  portfolio: PortfolioItem[];
+}
+
+interface HistoryData {
+  date: string;
+  value: number;
+}
+
+export default function PortfolioHistory({ portfolio }: PortfolioHistoryProps) {
+  const [history, setHistory] = useState<HistoryData[]>([]);
+  const [pieData, setPieData] = useState<any>(null);
 
   useEffect(() => {
-    if (!portfolio || portfolio.length === 0) return;
-    // Convert to symbols/allocation
-    const symbols = portfolio.map(p => p.symbol);
-    const allocation = {};
-    portfolio.forEach(p => allocation[p.symbol] = p.shares);
-
-    fetch(`${process.env.NEXT_PUBLIC_API_BASE}/analytics/advanced`, {
+    if (!portfolio.length) return;
+    const symbols = portfolio.map(item => item.symbol);
+    fetch(`${process.env.NEXT_PUBLIC_API_BASE}/portfolio/history`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ symbols, allocation })
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("access_token")}`
+      },
+      body: JSON.stringify({ symbols }),
     })
-      .then(r => r.json())
-      .then(({ metrics = {}, sector_breakdown = {} }) => {
-        // Convert metrics object to array for .map()
-        const metricsArr = Object.entries(metrics).map(([symbol, vals]) => ({
-          symbol,
-          ...vals,
-        }));
-        setMetrics(metricsArr);
-        setSectorData({
-          labels: Object.keys(sector_breakdown),
+      .then(res => res.json())
+      .then((result) => {
+        setHistory(result.history || []);
+        // Optional: generate pie data for current portfolio allocation
+        setPieData({
+          labels: portfolio.map(item => item.symbol),
           datasets: [{
-            data: Object.values(sector_breakdown),
+            data: portfolio.map(item => item.shares),
             backgroundColor: ["#fb923c", "#FFD700", "#FF6347", "#42A5F5", "#66BB6A"]
           }]
         });
@@ -38,28 +49,35 @@ export default function AdvancedAnalyticsPanel({ portfolio }) {
   }, [portfolio]);
 
   return (
-    <div className="bg-white p-6 rounded-xl shadow">
-      <h3 className="font-semibold mb-3 text-orange-700">Advanced Metrics</h3>
-      <table className="w-full mb-4">
-        <thead>
-          <tr className="font-semibold"><th>Symbol</th><th>Beta</th><th>Alpha</th><th>Sharpe</th></tr>
-        </thead>
-        <tbody>
-          {Array.isArray(metrics) && metrics.length === 0 ?
-            <tr><td colSpan={4} className="text-center">No analytics yet.</td></tr> :
-            metrics.map(m => (
-              <tr key={m.symbol}>
-                <td>{m.symbol}</td>
-                <td>{m.beta?.toFixed(2) ?? "--"}</td>
-                <td>{m.alpha?.toFixed(4) ?? "--"}</td>
-                <td>{m.sharpe?.toFixed(2) ?? "--"}</td>
+    <div className="bg-white dark:bg-zinc-900 p-6 rounded-xl shadow">
+      <h3 className="font-semibold mb-3 text-orange-700 dark:text-orange-400">Portfolio History</h3>
+      {history.length === 0 ? (
+        <div className="text-gray-500 dark:text-gray-400">No history data available.</div>
+      ) : (
+        <div className="overflow-x-auto">
+          <table className="w-full mb-4 text-black dark:text-white">
+            <thead>
+              <tr className="font-semibold border-b border-zinc-200 dark:border-zinc-700">
+                <th className="py-1 text-left">Date</th>
+                <th className="py-1 text-left">Total Value</th>
               </tr>
-            ))}
-        </tbody>
-      </table>
-      <div className="w-64 mx-auto">
-        {sectorData.labels.length > 0 && <Pie data={sectorData} />}
-      </div>
+            </thead>
+            <tbody>
+              {history.map(h => (
+                <tr key={h.date} className="border-b border-zinc-100 dark:border-zinc-800">
+                  <td className="py-1">{h.date}</td>
+                  <td className="py-1">${h.value.toLocaleString()}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+      {pieData && pieData.labels.length > 0 && (
+        <div className="w-64 mx-auto mt-4">
+          <Pie data={pieData} />
+        </div>
+      )}
     </div>
   );
 }

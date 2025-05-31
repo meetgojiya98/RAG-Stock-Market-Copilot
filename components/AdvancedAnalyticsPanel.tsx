@@ -5,7 +5,6 @@ import { Chart, ArcElement, Tooltip, Legend } from "chart.js";
 
 Chart.register(ArcElement, Tooltip, Legend);
 
-// --- Add proper typing ---
 type PortfolioItem = {
   symbol: string;
   shares: number;
@@ -15,9 +14,22 @@ interface AdvancedAnalyticsPanelProps {
   portfolio: PortfolioItem[];
 }
 
+type Metric = {
+  symbol: string;
+  beta?: number;
+  alpha?: number;
+  sharpe?: number;
+  [key: string]: any;
+};
+
+type SectorData = {
+  labels: string[];
+  datasets: { data: number[]; backgroundColor: string[] }[];
+} | null;
+
 export default function AdvancedAnalyticsPanel({ portfolio }: AdvancedAnalyticsPanelProps) {
-  const [metrics, setMetrics] = useState<any[]>([]);
-  const [sectorData, setSectorData] = useState<any>(null);
+  const [metrics, setMetrics] = useState<Metric[]>([]);
+  const [sectorData, setSectorData] = useState<SectorData>(null);
 
   useEffect(() => {
     if (!portfolio.length) return;
@@ -35,7 +47,12 @@ export default function AdvancedAnalyticsPanel({ portfolio }: AdvancedAnalyticsP
     })
       .then(r => r.json())
       .then(({ metrics, sector_breakdown }) => {
-        setMetrics(Object.entries(metrics || {}).map(([symbol, vals]: any) => ({ symbol, ...vals })));
+        setMetrics(
+          Object.entries(metrics || {}).map(([symbol, vals]: [string, any]) => ({
+            symbol,
+            ...vals,
+          }))
+        );
         setSectorData({
           labels: Object.keys(sector_breakdown || {}),
           datasets: [{
