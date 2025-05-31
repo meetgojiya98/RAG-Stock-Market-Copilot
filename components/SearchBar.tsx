@@ -1,20 +1,32 @@
-// components/SearchBar.tsx
 import React, { useState } from "react";
 
-export default function SearchBar({ stocks, onSelect }) {
-  const [q, setQ] = useState("");
-  const [results, setResults] = useState([]);
+// 1. Type definitions
+type Stock = {
+  symbol: string;
+  name: string;
+};
 
-  function handleChange(e) {
+type SearchBarProps = {
+  stocks: Stock[];
+  onSelect: (symbol: string) => void;
+};
+
+export default function SearchBar({ stocks, onSelect }: SearchBarProps) {
+  const [q, setQ] = useState("");
+  const [results, setResults] = useState<Stock[]>([]); // <-- Also add type here
+
+  function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     const value = e.target.value.toUpperCase();
     setQ(value);
     if (value.length > 0 && Array.isArray(stocks)) {
       setResults(
-        stocks.filter(
-          (stock) =>
-            stock.symbol.toLowerCase().startsWith(value.toLowerCase()) ||
-            stock.name.toLowerCase().includes(value.toLowerCase())
-        ).slice(0, 10)
+        stocks
+          .filter(
+            (stock) =>
+              stock.symbol.toLowerCase().startsWith(value.toLowerCase()) ||
+              stock.name.toLowerCase().includes(value.toLowerCase())
+          )
+          .slice(0, 10)
       );
     } else {
       setResults([]);
