@@ -32,7 +32,14 @@ const RANGES = [
   { label: "Max", value: "max" }
 ];
 
-export default function Chart({ data: _data, loading: _loading, symbol = "AAPL" }) {
+// Define props type
+interface ChartProps {
+  data?: any;
+  loading: boolean;
+  symbol?: string;
+}
+
+export default function Chart({ data: _data, loading: _loading, symbol = "AAPL" }: ChartProps) {
   const [chartData, setChartData] = useState<any>(null);
   const [range, setRange] = useState("1mo");
   const [loading, setLoading] = useState(_loading || false);
@@ -50,11 +57,11 @@ export default function Chart({ data: _data, loading: _loading, symbol = "AAPL" 
           setChartData(null);
         } else {
           setChartData({
-            labels: data.map(d => d.date),
+            labels: data.map((d: any) => d.date),
             datasets: [
               {
                 label: `${symbol} Price`,
-                data: data.map(d => d.close ?? d.price),
+                data: data.map((d: any) => d.close ?? d.price),
                 fill: true,
                 borderColor: "#fb923c",
                 backgroundColor: "rgba(251, 146, 60, 0.15)",
@@ -117,7 +124,7 @@ export default function Chart({ data: _data, loading: _loading, symbol = "AAPL" 
                   ticks: {
                     color: "#fb923c",
                     maxTicksLimit: 8,
-                    callback: function (val, idx, values) {
+                    callback: function (val: any, idx: number, values: any) {
                       if (range === "1mo" || range === "6mo") return this.getLabelForValue(val);
                       return idx % Math.ceil(values.length / 6) === 0 ? this.getLabelForValue(val) : "";
                     },
@@ -141,7 +148,7 @@ export default function Chart({ data: _data, loading: _loading, symbol = "AAPL" 
                 },
               },
             }}
-            height={110} // Adjust until the line chart fits your card height!
+            height={110}
           />
         )
       )}
