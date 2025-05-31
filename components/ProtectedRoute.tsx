@@ -1,20 +1,28 @@
-"use client"
+"use client";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { getToken } from "../api/auth";
+
+// Just a simple helper that retrieves the token from localStorage
+function getToken() {
+  if (typeof window !== "undefined") {
+    return localStorage.getItem("access_token");
+  }
+  return null;
+}
 
 export default function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(true);
   const router = useRouter();
 
   useEffect(() => {
-    if (!getToken()) {
+    const token = getToken();
+    if (!token) {
       router.push("/login");
     } else {
       setLoading(false);
     }
-  }, []);
+  }, [router]);
 
-  if (loading) return <div className="text-center mt-10">Loading...</div>;
+  if (loading) return <div>Loading...</div>;
   return <>{children}</>;
 }
