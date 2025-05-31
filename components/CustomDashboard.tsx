@@ -1,18 +1,20 @@
 "use client";
 import { useState } from "react";
-import { DndContext, useSortable, arrayMove, SortableContext, horizontalListSortingStrategy } from "@dnd-kit/sortable";
+// Fix: DndContext comes from @dnd-kit/core, rest from @dnd-kit/sortable
+import { DndContext } from "@dnd-kit/core";
+import { useSortable, arrayMove, SortableContext, horizontalListSortingStrategy } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import StockChart from "./StockChart";
 import Fundamentals from "./Fundamentals";
 
-const widgetMap = {
+const widgetMap: Record<string, React.ComponentType<{ stock: any }>> = {
   Chart: StockChart,
   Fundamentals: Fundamentals,
 };
 
 const defaultWidgets = ["Chart", "Fundamentals"];
 
-export default function CustomDashboard({ stock }) {
+export default function CustomDashboard({ stock }: { stock: any }) {
   const [widgets, setWidgets] = useState(defaultWidgets);
 
   return (
@@ -20,8 +22,12 @@ export default function CustomDashboard({ stock }) {
       <h1 className="text-2xl font-bold mb-4 text-saffron">Custom Dashboard</h1>
       <DndContext
         onDragEnd={({ active, over }) => {
-          if (active.id !== over?.id) {
-            setWidgets((items) => arrayMove(items, items.indexOf(active.id as string), items.indexOf(over?.id as string)));
+          if (active.id && over?.id && active.id !== over.id) {
+            setWidgets((items) => arrayMove(
+              items,
+              items.indexOf(active.id as string),
+              items.indexOf(over.id as string)
+            ));
           }
         }}
       >
@@ -37,7 +43,7 @@ export default function CustomDashboard({ stock }) {
   );
 }
 
-function SortableWidget({ id, stock }) {
+function SortableWidget({ id, stock }: { id: string, stock: any }) {
   const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id });
   const Widget = widgetMap[id];
   return (
