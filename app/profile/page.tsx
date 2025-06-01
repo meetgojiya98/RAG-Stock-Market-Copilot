@@ -1,3 +1,19 @@
+// "use client";
+// import AuthGuard from "../../components/AuthGuard";
+
+// export default function ProfilePage() {
+//   return (
+//     <AuthGuard>
+//       <div className="max-w-xl mx-auto py-12">
+//         <h2 className="text-2xl font-bold mb-6">Profile</h2>
+//         <div className="bg-white dark:bg-zinc-900 p-6 rounded-lg shadow text-black dark:text-white">
+//           Profile info goes here.
+//         </div>
+//       </div>
+//     </AuthGuard>
+//   );
+// }
+
 "use client";
 import { useEffect, useState } from "react";
 import AuthGuard from "../../components/AuthGuard";
@@ -7,13 +23,18 @@ export default function ProfilePage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const token = localStorage.getItem("access_token");
-    if (!token) return;
+    // Run only on client
+    const token = typeof window !== "undefined" ? localStorage.getItem("access_token") : null;
+    if (!token) {
+      setLoading(false);
+      return;
+    }
     fetch(`${process.env.NEXT_PUBLIC_API_BASE}/auth/me`, {
       headers: { Authorization: `Bearer ${token}` },
     })
       .then((res) => res.json())
       .then((data) => setProfile(data))
+      .catch(() => setProfile(null))
       .finally(() => setLoading(false));
   }, []);
 
