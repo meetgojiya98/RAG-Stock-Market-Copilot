@@ -1,3 +1,5 @@
+[Live Demo 🚀](https://stock-market-copilot.vercel.app)
+
 # 📈 Stock Market Copilot
 
 Your **AI-powered, RAG-based stock market dashboard** to track live prices, analyze your portfolio, receive real-time notifications, monitor trending stocks, get personalized research, and ask AI about the stock market.
