@@ -5,9 +5,9 @@ import { Moon, Sun, LogOut, User } from "lucide-react";
 
 const NAV_LINKS = [
   { name: "Home", href: "/" },
-  { name: "Portfolio", href: "/portfolio" },
-  { name: "Notifications", href: "/notifications" },
-  { name: "Watchlist", href: "/watchlist" },
+  { name: "Portfolio", href: "/portfolio", protected: true },
+  { name: "Notifications", href: "/notifications", protected: true },
+  { name: "Watchlist", href: "/watchlist", protected: true },
   { name: "Analytics", href: "/analytics" },
   { name: "Research", href: "/research" },
 ];
@@ -18,6 +18,7 @@ export default function Header() {
   const router = useRouter();
   const pathname = usePathname();
 
+  // Theme handling
   useEffect(() => {
     const theme = localStorage.getItem("theme");
     setDark(theme === "dark");
@@ -26,12 +27,24 @@ export default function Header() {
     document.documentElement.classList.toggle("dark", dark);
     localStorage.setItem("theme", dark ? "dark" : "light");
   }, [dark]);
+
+  // Login state on route change and storage events
   useEffect(() => {
     const checkLogin = () => setLoggedIn(!!localStorage.getItem("access_token"));
     checkLogin();
     window.addEventListener("storage", checkLogin);
     return () => window.removeEventListener("storage", checkLogin);
-  }, []);
+  }, [pathname]);
+
+  // Navigation handler for protected links
+  const handleNav = (href: string, isProtected: boolean) => {
+    if (isProtected && !localStorage.getItem("access_token")) {
+      router.push("/login");
+    } else {
+      router.push(href);
+    }
+  };
+
   const handleLogout = () => {
     localStorage.removeItem("access_token");
     setLoggedIn(false);
@@ -54,7 +67,7 @@ export default function Header() {
               ${pathname === link.href
                 ? "bg-gradient-to-r from-orange-500 to-yellow-400 text-white shadow"
                 : "text-zinc-700 hover:text-orange-600 dark:text-zinc-200 dark:hover:text-orange-400"}`}
-            onClick={() => router.push(link.href)}
+            onClick={() => handleNav(link.href, !!link.protected)}
           >
             {link.name}
           </button>

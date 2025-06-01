@@ -6,7 +6,6 @@ import AdvancedAnalyticsPanel from "../../components/AdvancedAnalyticsPanel";
 
 export default function PortfolioPage() {
   const [portfolio, setPortfolio] = useState([]);
-
   const fetchPortfolio = async () => {
     const token = localStorage.getItem("access_token");
     const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}/portfolio`, {
@@ -14,9 +13,7 @@ export default function PortfolioPage() {
     });
     setPortfolio(await res.json());
   };
-
   useEffect(() => { fetchPortfolio(); }, []);
-
   return (
     <AuthGuard>
       <div className="max-w-xl mx-auto py-12">
