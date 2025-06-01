@@ -11,9 +11,11 @@ const NotificationsSocket: React.FC<Props> = ({ onNotification }) => {
     const token = localStorage.getItem("access_token");
     if (!token) return;
 
-    const apiBase =
-    process.env.NEXT_PUBLIC_API_BASE?.replace(/^http/, "ws") ?? "ws://localhost:8000";
-    const ws = new WebSocket(`${apiBase}/ws/notifications?token=${token}`);
+    const wsUrl =
+      process.env.NODE_ENV === "development"
+        ? `ws://localhost:8000/ws/notifications?token=${token}`
+        : `wss://stock-market-copilot.onrender.com/ws/notifications?token=${token}`;
+    const ws = new WebSocket(wsUrl);
 
     ws.onmessage = (event) => {
       try {

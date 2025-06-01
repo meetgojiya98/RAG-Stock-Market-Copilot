@@ -26,9 +26,11 @@ export default function NotificationsPanel() {
     fetchNotifications();
     // Live notifications via websocket!
     const token = localStorage.getItem("access_token");
-    const apiBase =
-    process.env.NEXT_PUBLIC_API_BASE?.replace(/^http/, "ws") ?? "ws://localhost:8000";
-    ws.current = new WebSocket(`${apiBase}/ws/notifications?token=${token}`);
+    const wsUrl =
+      process.env.NODE_ENV === "development"
+        ? `ws://localhost:8000/ws/notifications?token=${token}`
+        : `wss://stock-market-copilot.onrender.com/ws/notifications?token=${token}`;
+    ws.current = new WebSocket(wsUrl);
 
     ws.current.onmessage = event => {
       const notif: Notification = JSON.parse(event.data);

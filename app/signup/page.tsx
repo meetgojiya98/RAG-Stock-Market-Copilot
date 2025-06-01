@@ -7,16 +7,19 @@ export default function SignupPage() {
   const [password, setPassword] = useState("");
   const [username, setUsername] = useState("");
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
   const router = useRouter();
 
   async function handleSignup(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setError("");
+    setLoading(true);
     const resp = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}/auth/register`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email, password, username }),
     });
+    setLoading(false);
     if (resp.ok) {
       router.push("/login");
     } else {
@@ -60,9 +63,10 @@ export default function SignupPage() {
         />
         <button
           type="submit"
-          className="bg-orange-600 hover:bg-orange-700 text-white font-bold py-2 rounded-xl transition"
+          className="bg-orange-600 hover:bg-orange-700 text-white font-bold py-2 rounded-xl transition disabled:opacity-60"
+          disabled={loading}
         >
-          Sign Up
+          {loading ? "Signing Up..." : "Sign Up"}
         </button>
         {error && (
           <div className="text-red-600 dark:text-red-400 text-center">{error}</div>
