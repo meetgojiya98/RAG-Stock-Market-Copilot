@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import AdvancedAnalyticsPanel from "../../components/AdvancedAnalyticsPanel";
+import AuthGuard from "../../components/AuthGuard";
 
 export default function AnalyticsPage() {
   const [portfolio, setPortfolio] = useState([]);
@@ -17,9 +18,11 @@ export default function AnalyticsPage() {
   }, []);
 
   return (
-    <div className="max-w-xl mx-auto py-12">
-      <h2 className="text-2xl font-bold mb-6">Portfolio Analytics</h2>
-      <AdvancedAnalyticsPanel portfolio={portfolio} />
-    </div>
+    <AuthGuard>
+      <div className="max-w-xl mx-auto py-12">
+        <h2 className="text-2xl font-bold mb-6">Portfolio Analytics</h2>
+        <AdvancedAnalyticsPanel portfolio={portfolio} />
+      </div>
+    </AuthGuard>
   );
 }

@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import PortfolioTable from "../../components/PortfolioTable";
 import AdvancedAnalyticsPanel from "../../components/AdvancedAnalyticsPanel";
+import AuthGuard from "../../components/AuthGuard";
 
 export default function PortfolioPage() {
   const [portfolio, setPortfolio] = useState([]);
@@ -17,12 +18,14 @@ export default function PortfolioPage() {
   useEffect(() => { fetchPortfolio(); }, []);
 
   return (
-    <div className="max-w-xl mx-auto py-12">
-      <h2 className="text-2xl font-bold mb-6">Your Portfolio</h2>
-      <PortfolioTable onPortfolioChange={fetchPortfolio} />  
-      <div className="mt-8">
-        <AdvancedAnalyticsPanel portfolio={portfolio} />
+    <AuthGuard>
+      <div className="max-w-xl mx-auto py-12">
+        <h2 className="text-2xl font-bold mb-6">Your Portfolio</h2>
+        <PortfolioTable onPortfolioChange={fetchPortfolio} />  
+        <div className="mt-8">
+          <AdvancedAnalyticsPanel portfolio={portfolio} />
+        </div>
       </div>
-    </div>
+    </AuthGuard>
   );
 }
