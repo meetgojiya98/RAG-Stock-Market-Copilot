@@ -1,6 +1,6 @@
 "use client";
-import ResearchPanel from "../../components/ResearchPanel";
 import AuthGuard from "../../components/AuthGuard";
+import ResearchPanel from "../../components/ResearchPanel";
 
 export default function ResearchPage() {
   return (

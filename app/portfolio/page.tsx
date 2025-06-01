@@ -1,8 +1,8 @@
 "use client";
+import AuthGuard from "../../components/AuthGuard";
 import { useEffect, useState } from "react";
 import PortfolioTable from "../../components/PortfolioTable";
 import AdvancedAnalyticsPanel from "../../components/AdvancedAnalyticsPanel";
-import AuthGuard from "../../components/AuthGuard";
 
 export default function PortfolioPage() {
   const [portfolio, setPortfolio] = useState([]);

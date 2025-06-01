@@ -1,7 +1,7 @@
 "use client";
+import AuthGuard from "../../components/AuthGuard";
 import { useEffect, useState } from "react";
 import AdvancedAnalyticsPanel from "../../components/AdvancedAnalyticsPanel";
-import AuthGuard from "../../components/AuthGuard";
 
 export default function AnalyticsPage() {
   const [portfolio, setPortfolio] = useState([]);
