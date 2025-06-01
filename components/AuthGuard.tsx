@@ -1,56 +1,22 @@
-// "use client";
-// import { useEffect, useState } from "react";
-// import { useRouter } from "next/navigation";
-
-// export default function AuthGuard({ children }: { children: React.ReactNode }) {
-//   const [checking, setChecking] = useState(true);
-//   const router = useRouter();
-
-//   useEffect(() => {
-//     const token = localStorage.getItem("access_token");
-//     if (!token) {
-//       router.replace("/login");
-//     } else {
-//       setChecking(false);
-//     }
-//   }, [router]);
-
-//   if (checking) {
-//     return <div className="text-center py-16">Checking authentication...</div>;
-//   }
-//   return <>{children}</>;
-// }
-
 "use client";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
 export default function AuthGuard({ children }: { children: React.ReactNode }) {
-  const [loading, setLoading] = useState(true);
-  const [ok, setOk] = useState(false);
+  const [checking, setChecking] = useState(true);
   const router = useRouter();
 
   useEffect(() => {
-    // Safe localStorage
-    const token = typeof window !== "undefined" ? localStorage.getItem("access_token") : null;
+    const token = localStorage.getItem("access_token");
     if (!token) {
       router.replace("/login");
-      return;
+    } else {
+      setChecking(false);
     }
-    fetch(`${process.env.NEXT_PUBLIC_API_BASE}/auth/me`, {
-      headers: { Authorization: `Bearer ${token}` }
-    })
-      .then(res => {
-        if (!res.ok) throw new Error("Not authenticated");
-        return res.json();
-      })
-      .then(() => setOk(true))
-      .catch(() => router.replace("/login"))
-      .finally(() => setLoading(false));
   }, [router]);
 
-  if (loading) return <div className="text-center py-16">Checking authentication...</div>;
-  if (!ok) return null;
-
+  if (checking) {
+    return <div className="text-center py-16">Checking authentication...</div>;
+  }
   return <>{children}</>;
 }
